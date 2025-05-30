@@ -184,3 +184,4 @@ proxies.json
 
 # Windows shortcuts
 *.lnk
+.fake

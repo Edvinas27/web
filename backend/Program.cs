@@ -1,8 +1,8 @@
 
 using backend.Data;
-using backend.Services;
+using backend.Interfaces;
+using backend.Repository;
 using Microsoft.EntityFrameworkCore;
-using Supabase;
 
 var builder = WebApplication.CreateBuilder(args);
 {
@@ -27,7 +27,7 @@ var builder = WebApplication.CreateBuilder(args);
         options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
     });
 
-    // builder.Services.AddSingleton<SupabaseService>();
+    builder.Services.AddScoped<IProductRepository, ProductRepository>();
 }
 
 var app = builder.Build();
