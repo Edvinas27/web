@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+html, body {
+    scrollbar-width: none;
+    -ms-overflow-style: none; /* IE and Edge remove scrollbar*/
+    background-color: #FDFBEE;
+}
+
+body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera remove scrollbar*/
+}
+
+html {
+    scroll-behavior: smooth;
+}
