@@ -18,7 +18,8 @@ export default function CartPage() {
                 setData(items);
             } catch (error)
             {
-                console.error('Error fetching cart items:', error);
+                console.error('_Error fetching cart items_', error);
+                navigate('/');
             } finally {
                 setLoading(false);
             }

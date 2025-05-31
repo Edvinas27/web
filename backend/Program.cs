@@ -1,13 +1,17 @@
-
-using backend.Controllers;
+using System.Text.Json.Serialization;
 using backend.Data;
 using backend.Interfaces;
 using backend.Repository;
+using backend.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 {
-    builder.Services.AddControllers();
+    builder.Services.AddControllers().AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.WriteIndented = true;
+    });
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
     builder.Services.AddSignalR();
@@ -29,6 +33,8 @@ var builder = WebApplication.CreateBuilder(args);
     });
 
     builder.Services.AddScoped<IProductRepository, ProductRepository>();
+    builder.Services.AddScoped<ICartRepository, CartRepository>();
+    builder.Services.AddScoped<IJwtService, JwtService>();
 }
 
 var app = builder.Build();
