@@ -15,12 +15,13 @@ namespace backend.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductRepository _repo;
+        private readonly ILogger<ProductsController> _logger;
 
-        public ProductsController(IProductRepository repo)
+        public ProductsController(IProductRepository repo, ILogger<ProductsController> logger)
         {
             _repo = repo;
+            _logger = logger;
         }
-
 
         [HttpGet]
         public async Task<IActionResult> GetAllProducts()

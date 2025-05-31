@@ -11,7 +11,7 @@ export default function HelpChat({isOpen}) {
     const joinChatRoom = async (username, chatroom) => {
         try {
             const conn = new HubConnectionBuilder().
-            withUrl("http://localhost:5171/chatHub").
+            withUrl("https://localhost:7117/chatHub").
             configureLogging(LogLevel.Information).
             withAutomaticReconnect().
             build();

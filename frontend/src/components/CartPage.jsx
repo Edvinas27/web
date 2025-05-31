@@ -1,50 +1,73 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { cartService } from '../../Services/CartService'
+
 
 export default function CartPage() {
 
     const navigate = useNavigate()
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const items = [
-        { id: 1, name: 'Item 1', price: 10, quantity: 2 },
-        { id: 2, name: 'Item 2', price: 20, quantity: 1 },
-        { id: 3, name: 'Item 3', price: 30, quantity: 3 },
-        { id: 4, name: 'Item 4', price: 40, quantity: 1 },
-        { id: 5, name: 'Item 5', price: 50, quantity: 2 },
-    ]
+    useEffect(() => {
+        const fetchCartItems = async () => {
+            try
+            {
+                setLoading(true);
+                const items = await cartService.getItems();
+                setData(items);
+            } catch (error)
+            {
+                console.error('Error fetching cart items:', error);
+            } finally {
+                setLoading(false);
+            }
+        }
 
-    const total = items.reduce((total, item) =>  total + (item.price * item.quantity), 0);
-    const tax = total * 0.05;
+        fetchCartItems();
+    }, []);
+
+    const total = data.reduce((acc, item) => acc + item.price, 0);
+    const tax = total * 0.07; // Assuming a 7% sales tax
     const grandTotal = total + tax;
 
+  if(loading)
+    {
+        return (
+            <div className='flex justify-center items-center h-screen'>
+                <h1 className='text-2xl font-bold'>Loading...</h1>
+            </div>
+        )
+    }  
+
   return (
-    <div className='flex space-between mt-28 ml-4'>
+     <div className='flex space-between mt-28 ml-4'>
         <table className='w-full border-collapse'>
-            <tbody class>
+            <tbody>
             <tr className='border-b'>
                 <th className='text-left pl-4'>Item</th>
                 <th>Price</th>
                 <th>Quantity</th>
                 <th>Total</th>
             </tr>
-            {items.map((item) => (
+            {data.map((item) => (
                 <tr key={item.id} className='text-center border-b '>
                     <td>{
                         <div className='flex items-center pl-4'>
-                            <img className='h-32 w-32' src='/assets/heart.png'/>
+                            <img className='h-32 w-32' src={item.imageUrl}/>
                             <h2 className='mb-12 ml-8 text-xl'>{item.name}</h2>
                         </div>
                         }</td>
                     <td>${item.price}</td>
                     <td>{item.quantity}</td>
-                    <td>${(item.price * item.quantity).toFixed(2)}</td>
+                    <td>${(item.price).toFixed(2)}</td>
                 </tr>
             ))}
             </tbody>
         </table>
         <div className='border-2 w-168 h-128 ml-16 flex flex-col mr-4'>
             <h1 className='text-3xl font-medium ml-8 tracking-widest text-center'>
-                Your cart ({items.length} Items)
+                Your cart ({data.length} Items)
             </h1>
             <div className='mt-24'>
                 <div className='flex justify-between border-b'>

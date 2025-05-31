@@ -21,20 +21,19 @@ namespace backend.Repository
 
         public async Task<GetProductResponse> CreateProductAsync(CreateProductRequest request)
         {
-            var product = new Product
-            {
-                Name = request.Name,
-                Price = request.Price,
-                Description = request.Description,
-                ImageUrl = request.ImageUrl,
-                CreatedAt = DateTime.UtcNow,
-            };
+                var product = new Product
+                {
+                    Name = request.Name,
+                    Price = request.Price,
+                    Description = request.Description,
+                    ImageUrl = request.ImageUrl,
+                    CreatedAt = DateTime.UtcNow,
+                };
 
-            await _db.Products.AddAsync(product);
-            await _db.SaveChangesAsync();
+                await _db.Products.AddAsync(product);
+                await _db.SaveChangesAsync();
 
-            return product.ToResponse();
-
+                return product.ToResponse();
         }
 
         public async Task<Product?> DeleteProductAsync(long id)
@@ -48,6 +47,7 @@ namespace backend.Repository
 
             _db.Products.Remove(response);
             await _db.SaveChangesAsync();
+
             return response;
         }
 
@@ -66,7 +66,7 @@ namespace backend.Repository
         }
 
         public async Task<GetProductResponse?> UpdateProductAsync(long id, UpdateProductRequest request)
-        {
+        {  
             var response = await _db.Products.FindAsync(id);
 
             if (response == null)
