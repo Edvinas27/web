@@ -19,65 +19,52 @@ namespace backend.Repository
             _db = db;
         }
 
-        public async Task<GetProductResponse> CreateProductAsync(CreateProductRequest request)
+        public async Task<Product> CreateProductAsync(Product product)
         {
-                var product = new Product
-                {
-                    Name = request.Name,
-                    Price = request.Price,
-                    Description = request.Description,
-                    ImageUrl = request.ImageUrl,
-                    CreatedAt = DateTime.UtcNow,
-                };
-
-                await _db.Products.AddAsync(product);
-                await _db.SaveChangesAsync();
-
-                return product.ToResponse();
-        }
-
-        public async Task<Product?> DeleteProductAsync(long id)
-        {
-            var response = await _db.Products.FindAsync(id);
-
-            if (response == null)
-            {
-                return null;
-            }
-
-            _db.Products.Remove(response);
+            await _db.Products.AddAsync(product);
             await _db.SaveChangesAsync();
 
-            return response;
+            return product;
         }
 
-        public async Task<IEnumerable<GetProductResponse>> GetAllProductsAsync()
+        public async Task<bool> DeleteProductAsync(long id)
         {
-            var response = await _db.Products.Select(data => data.ToResponse()).ToListAsync();
+            var product = await _db.Products.FindAsync(id);
 
-            return response;
+            if (product == null)
+            {
+                return false;
+            }
+
+            _db.Products.Remove(product);
+            await _db.SaveChangesAsync();
+
+            return true;
         }
 
-        public async Task<GetProductResponse?> GetProductByIdAsync(long id)
+        public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
-            var response = await _db.Products.FindAsync(id);
-
-            return response?.ToResponse();
+            return await _db.Products.ToListAsync();
         }
 
-        public async Task<GetProductResponse?> UpdateProductAsync(long id, UpdateProductRequest request)
+        public async Task<Product?> GetProductByIdAsync(long id)
+        {
+            return await _db.Products.FindAsync(id);
+        }
+
+        public async Task<Product?> UpdateProductAsync(long id, Product request)
         {  
-            var response = await _db.Products.FindAsync(id);
+            var product = await _db.Products.FindAsync(id);
 
-            if (response == null)
+            if (product == null)
             {
                 return null;
             }
 
-            _db.Entry(response).CurrentValues.SetValues(request);
+            _db.Entry(product).CurrentValues.SetValues(request);
             await _db.SaveChangesAsync();
 
-            return response.ToResponse();
+            return product;
         }
     }
 }

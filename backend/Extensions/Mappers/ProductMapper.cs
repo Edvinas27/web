@@ -8,7 +8,7 @@ namespace backend.Extensions.Mappers
 {
     public static class ProductMapper
     {
-        public static GetProductResponse ToResponse(this Product product)
+        public static GetProductResponse ToResponseGet(this Product product)
         {
             return new GetProductResponse
             {
@@ -17,6 +17,32 @@ namespace backend.Extensions.Mappers
                 Price = product.Price,
                 Description = product.Description,
                 ImageUrl = product.ImageUrl
+            };
+        }
+
+        public static CreateProductResponse ToResponseCreate(this Product product)
+        {
+            return new CreateProductResponse
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Price = product.Price,
+                Description = product.Description,
+                ImageUrl = product.ImageUrl,
+                CreatedAt = DateTime.UtcNow
+            };
+        }
+
+        public static UpdateProductResponse ToResponseUpdate(this Product product)
+        {
+            return new UpdateProductResponse
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Price = product.Price,
+                Description = product.Description,
+                ImageUrl = product.ImageUrl,
+                CreatedAt = product.CreatedAt
             };
         }
     }

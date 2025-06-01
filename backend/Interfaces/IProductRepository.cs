@@ -8,10 +8,10 @@ namespace backend.Interfaces
 {
     public interface IProductRepository
     {
-        Task<IEnumerable<GetProductResponse>> GetAllProductsAsync();
-        Task<GetProductResponse?> GetProductByIdAsync(long id);
-        Task<GetProductResponse> CreateProductAsync(CreateProductRequest request);
-        Task<GetProductResponse?> UpdateProductAsync(long id, UpdateProductRequest request);
-        Task<Product?> DeleteProductAsync(long id);
+        Task<IEnumerable<Product>> GetAllProductsAsync();
+        Task<Product?> GetProductByIdAsync(long id);
+        Task<Product> CreateProductAsync(Product product);
+        Task<Product?> UpdateProductAsync(long id, Product request);
+        Task<bool> DeleteProductAsync(long id);
     }
 }

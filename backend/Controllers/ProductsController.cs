@@ -14,19 +14,17 @@ namespace backend.Controllers
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
-        private readonly IProductRepository _repo;
-        private readonly ILogger<ProductsController> _logger;
+        private readonly IProductService _service;
 
-        public ProductsController(IProductRepository repo, ILogger<ProductsController> logger)
+        public ProductsController(IProductService service)
         {
-            _repo = repo;
-            _logger = logger;
+            _service = service;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllProducts()
         {
-            var products = await _repo.GetAllProductsAsync();
+            var products = await _service.GetAllProductsAsync();
 
             return Ok(products);
         }
@@ -34,7 +32,7 @@ namespace backend.Controllers
         [HttpGet("{id:long}")]
         public async Task<IActionResult> GetProductById(long id)
         {
-            var product = await _repo.GetProductByIdAsync(id);
+            var product = await _service.GetProductByIdAsync(id);
 
             if (product == null)
             {
@@ -46,14 +44,14 @@ namespace backend.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromBody] CreateProductRequest request)
         {
-            var createdProduct = await _repo.CreateProductAsync(request);
+            var createdProduct = await _service.CreateProductAsync(request);
             return CreatedAtAction(nameof(GetProductById), new { id = createdProduct!.Id }, createdProduct);
         }
 
         [HttpPut("{id:long}")]
         public async Task<IActionResult> UpdateProduct(long id, [FromBody] UpdateProductRequest request)
         {
-            var updatedProduct = await _repo.UpdateProductAsync(id, request);
+            var updatedProduct = await _service.UpdateProductAsync(id, request);
 
             if (updatedProduct == null)
             {
@@ -66,9 +64,9 @@ namespace backend.Controllers
         [HttpDelete("{id:long}")]
         public async Task<IActionResult> DeleteProduct(long id)
         {
-            var deletedProduct = await _repo.DeleteProductAsync(id);
+            var deletedProduct = await _service.DeleteProductAsync(id);
 
-            if (deletedProduct == null)
+            if (deletedProduct == false)
             {
                 return NotFound();
             }
