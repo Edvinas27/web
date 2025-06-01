@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using backend.Models.Cart;
+using backend.Models.Products;
 
 namespace backend.Extensions.Mappers
 {
@@ -28,7 +29,6 @@ namespace backend.Extensions.Mappers
                 CartItems = cart.CartItems.Select(data => new CartItemResponse
                 {
                     Id = data.Id,
-                    ProductId = data.ProductId,
                     Quantity = data.Quantity,
                     Product = data.Product
                 }).ToList()

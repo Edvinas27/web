@@ -18,7 +18,6 @@ namespace backend.Models.Cart
     public class CartItemResponse
     {
         public long Id { get; set; }
-        public long ProductId { get; set; }
         public int Quantity { get; set; }
         public Product? Product { get; set; }
     }
