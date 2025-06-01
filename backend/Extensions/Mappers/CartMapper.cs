@@ -23,12 +23,10 @@ namespace backend.Extensions.Mappers
         {
             return new CartDto
             {
-                Id = cart.Id,
                 GuestId = cart.GuestId,
                 CreatedAt = cart.CreatedAt,
                 CartItems = cart.CartItems.Select(data => new CartItemResponse
                 {
-                    Id = data.Id,
                     Quantity = data.Quantity,
                     Product = data.Product
                 }).ToList()
@@ -39,19 +37,6 @@ namespace backend.Extensions.Mappers
         {
             return new AddCartItemResponse
             {
-                Id = cartItem.Id,
-                CartId = cartItem.CartId,
-                ProductId = cartItem.ProductId,
-                Quantity = cartItem.Quantity
-            };
-        }
-
-        public static UpdateCartItemResponse ToUpdateCartItemResponse(this CartItem cartItem)
-        {
-            return new UpdateCartItemResponse
-            {
-                Id = cartItem.Id,
-                CartId = cartItem.CartId,
                 ProductId = cartItem.ProductId,
                 Quantity = cartItem.Quantity
             };

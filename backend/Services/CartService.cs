@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using backend.Extensions.Mappers;
 using backend.Interfaces;
 using backend.Models.Cart;
+using backend.Models.Products;
 
 namespace backend.Services
 {
@@ -17,14 +18,16 @@ namespace backend.Services
             _prodRepo = prodRepo;
             _cartRepo = cartRepo;
         }
-        public async Task<AddCartItemResponse> AddCartItemAsync(long cartId, AddCartItemRequest request)
+        public async Task<AddCartItemResponse> AddItemToCartAsync(string guestId, AddCartItemRequest request)
         {
             var product = await _prodRepo.GetProductByIdAsync(request.ProductId);
 
             if (product == null)
             {
-                throw new Exception("Product not found");
+                throw new ArgumentException("Product not found");
             }
+
+            var cart = await GetCartInternalAsync(guestId);
 
             var cartItem = new CartItem
             {
@@ -32,10 +35,22 @@ namespace backend.Services
                 Quantity = request.Quantity,
             };
 
-            var addedItem = await _cartRepo.AddCartItemAsync(cartId, cartItem);
+            var addedItem = await _cartRepo.AddCartItemToCartAsync(cart.Id, cartItem);
 
             return addedItem.ToAddCartItemResponse();
+        }
 
+
+        public async Task<CartDto> GetOrCreateCartAsync(string guestId)
+        {
+            var cart = await _cartRepo.GetCartByGuestIdAsync(guestId);
+
+            if (cart == null)
+            {
+                cart = await CreateCartAsync(guestId);
+            }
+
+            return cart.ToCartDto();
         }
 
         public async Task<Cart> CreateCartAsync(string guestId)
@@ -49,47 +64,34 @@ namespace backend.Services
             return await _cartRepo.CreateCartAsync(cart);
         }
 
-        public async Task<CartDto?> GetCartByGuestIdAsync(string guestId)
+        public async Task<bool> RemoveCartItemAsync(string guestId, long cartItemId)
         {
             var cart = await _cartRepo.GetCartByGuestIdAsync(guestId);
 
             if (cart == null)
             {
-                return null;
+                return false;
             }
-            
-            return cart.ToCartDto();
-        }
 
-        public async Task<CartDto?> GetCartByIdAsync(long cartId)
-        {
-            var cart = await _cartRepo.GetCartByIdAsync(cartId);
-            if (cart == null)
+            var cartItem = cart.CartItems?.FirstOrDefault(ci => ci.Id == cartItemId);
+
+            if (cartItem == null)
             {
-                return null;
+                return false;
             }
 
-            return cart.ToCartDto();
-        }
-
-        public async Task<bool> RemoveCartItemAsync(long cartItemId)
-        {
             return await _cartRepo.RemoveCartItemAsync(cartItemId);
         }
 
-        public async Task<UpdateCartItemResponse?> UpdateCartItemAsync(long cartItemId, UpdateCartItemRequest request)
+        private async Task<Cart> GetCartInternalAsync(string guestId)
         {
-            var cartItem = await _cartRepo.GetCartItemByIdAsync(cartItemId) ?? throw new Exception("Cart item not found");
-
-            cartItem.Quantity = request.Quantity;
-            var updatedItem = await _cartRepo.UpdateCartItemAsync(cartItemId);
-
-            if (updatedItem == null)
+            var cart = await _cartRepo.GetCartByGuestIdAsync(guestId);
+            if (cart == null)
             {
-                return null;
+                cart = await CreateCartAsync(guestId);
             }
+            return cart;
 
-            return updatedItem.ToUpdateCartItemResponse();
         }
     }
 }

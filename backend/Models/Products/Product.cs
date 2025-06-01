@@ -13,6 +13,8 @@ namespace backend.Models.Products
 
         public string Name { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "Price is required.")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Price must be a positive number.")]
         public decimal Price { get; set; }
 
         public string Description { get; set; } = string.Empty;

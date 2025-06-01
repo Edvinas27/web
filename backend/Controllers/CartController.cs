@@ -25,36 +25,19 @@ namespace backend.Controllers
         public async Task<IActionResult> GetCart()
         {
             var guestId = GetGuestIdFromRequest();
+
             if (guestId == null)
             {
                 return Unauthorized("Invalid or missing guest token.");
             }
 
-            var cart = await _service.GetCartByGuestIdAsync(guestId);
-
-            if (cart == null)
-            {
-                return NotFound("Cart not found for the guest.");
-            }
+            var cart = await _service.GetOrCreateCartAsync(guestId);
 
             return Ok(cart);
         }
 
-        [HttpGet("{cartId:long}")]
-        public async Task<IActionResult> GetCartById([FromRoute] long cartId)
-        {
-            var cart = await _service.GetCartByIdAsync(cartId);
-
-            if (cart == null)
-            {
-                return NotFound("Cart not found.");
-            }
-
-            return Ok(cart);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CreateCart()
+        [HttpPost("items")]
+        public async Task<IActionResult> AddItemToCart([FromBody] AddCartItemRequest request)
         {
             var guestId = GetGuestIdFromRequest();
 
@@ -63,41 +46,15 @@ namespace backend.Controllers
                 return Unauthorized("Invalid or missing guest token.");
             }
 
-            var cart = await _service.CreateCartAsync(guestId);
+            var result = await _service.AddItemToCartAsync(guestId, request);
 
-            if (cart == null)
-            {
-                return BadRequest("Failed to create cart.");
-            }
-
-            return CreatedAtAction(nameof(GetCartById), new { cartId = cart.Id }, cart);
-        }
-
-        [HttpPost("add-item")]
-        public async Task<IActionResult> AddCartItem([FromBody] AddCartItemRequest request)
-        {
-            var guestId = GetGuestIdFromRequest();
-
-            if (guestId == null)
-            {
-                return Unauthorized("Invalid or missing guest token.");
-            }
-            var cart = await _service.GetCartByGuestIdAsync(guestId);
-
-            if (cart == null)
-            {
-                return NotFound("Cart not found for the guest.");
-            }
-
-            var cartItem = await _service.AddCartItemAsync(cart.Id, request);
-
-            if (cartItem == null)
+            if (result == null)
             {
                 return BadRequest("Failed to add item to cart.");
             }
 
-            return CreatedAtAction(nameof(GetCartById), new { cartId = cart.Id }, cartItem);
-        }   
+            return Ok(result);
+        }  
 
 
         private string? GetGuestIdFromRequest()

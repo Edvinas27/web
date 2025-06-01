@@ -8,16 +8,16 @@ namespace backend.Models.Cart
 {
     public class CartDto
     {
-        public long Id { get; set; }
         public string GuestId { get; set; } = string.Empty;
         public List<CartItemResponse> CartItems { get; set; } = [];
 
         public DateTime CreatedAt { get; set; }
+
+        public decimal TotalPrice => CartItems.Sum(item => item.Quantity * (item.Product?.Price) ?? 0);
     }
 
     public class CartItemResponse
     {
-        public long Id { get; set; }
         public int Quantity { get; set; }
         public Product? Product { get; set; }
     }

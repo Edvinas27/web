@@ -30,13 +30,13 @@ namespace backend.Controllers
         }
 
         [HttpGet("{id:long}")]
-        public async Task<IActionResult> GetProductById(long id)
+        public async Task<IActionResult> GetProductById([FromRoute] long id)
         {
             var product = await _service.GetProductByIdAsync(id);
 
             if (product == null)
             {
-                return NotFound();
+                return NotFound("Product not found.");
             }
             return Ok(product);
         }
@@ -49,26 +49,26 @@ namespace backend.Controllers
         }
 
         [HttpPut("{id:long}")]
-        public async Task<IActionResult> UpdateProduct(long id, [FromBody] UpdateProductRequest request)
+        public async Task<IActionResult> UpdateProduct([FromRoute] long id, [FromBody] UpdateProductRequest request)
         {
             var updatedProduct = await _service.UpdateProductAsync(id, request);
 
             if (updatedProduct == null)
             {
-                return NotFound();
+                return NotFound("Product not found.");
             }
 
             return Ok(updatedProduct);
         }
 
         [HttpDelete("{id:long}")]
-        public async Task<IActionResult> DeleteProduct(long id)
+        public async Task<IActionResult> DeleteProduct([FromRoute] long id)
         {
             var deletedProduct = await _service.DeleteProductAsync(id);
 
             if (deletedProduct == false)
             {
-                return NotFound();
+                return NotFound("Product not found.");
             }
 
             return NoContent();

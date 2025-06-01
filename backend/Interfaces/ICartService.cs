@@ -8,11 +8,8 @@ namespace backend.Interfaces
 {
     public interface ICartService
     {
-        Task<Cart> CreateCartAsync(string guestId);
-        Task<CartDto?> GetCartByIdAsync(long cartId);
-        Task<CartDto?> GetCartByGuestIdAsync(string guestId);
-        Task<AddCartItemResponse> AddCartItemAsync(long cartId, AddCartItemRequest request);
-        Task<UpdateCartItemResponse?> UpdateCartItemAsync(long cartItemId, UpdateCartItemRequest request);
-        Task<bool> RemoveCartItemAsync(long cartItemId);
+        Task<CartDto> GetOrCreateCartAsync(string guestId);
+        Task<AddCartItemResponse> AddItemToCartAsync(string guestId, AddCartItemRequest request);
+        Task<bool> RemoveCartItemAsync(string guestId, long cartItemId);
     }
 }

@@ -16,7 +16,7 @@ namespace backend.Repository
         {
             _db = db;
         }
-        public async Task<CartItem> AddCartItemAsync(long cartId, CartItem cartItem)
+        public async Task<CartItem> AddCartItemToCartAsync(long cartId, CartItem cartItem)
         {
             var cart = await _db.Carts.FindAsync(cartId) ?? throw new Exception("Cart not found");
 
@@ -39,31 +39,14 @@ namespace backend.Repository
 
         public async Task<Cart> CreateCartAsync(Cart cart)
         {
-
             await _db.Carts.AddAsync(cart);
             await _db.SaveChangesAsync();
             return cart;
         }
 
-
         public async Task<Cart?> GetCartByGuestIdAsync(string guestId)
         {
             return await _db.Carts.Include(c => c.CartItems).ThenInclude(ci => ci.Product).FirstOrDefaultAsync(c => c.GuestId == guestId);
-        }
-
-        public async Task<Cart?> GetCartByIdAsync(long cartId)
-        {
-           return await _db.Carts.Include(c => c.CartItems).ThenInclude(ci => ci.Product).FirstOrDefaultAsync(c => c.Id == cartId);
-        }
-
-        public async Task<CartItem?> GetCartItemByIdAsync(long cartItemId)
-        {
-            return await _db.CartItems.Include(c => c.Product).FirstOrDefaultAsync(ci => ci.Id == cartItemId);
-        }
-
-        public async Task<IEnumerable<CartItem>> GetCartItemsByCartIdAsync(long cartId)
-        {
-            return await _db.CartItems.Include(c => c.Product).Where(ci => ci.CartId == cartId).ToListAsync();
         }
 
         public async Task<bool> RemoveCartItemAsync(long cartItemId)
@@ -78,18 +61,6 @@ namespace backend.Repository
             _db.CartItems.Remove(cartItem);
             await _db.SaveChangesAsync();
             return true;
-        }
-
-        public async Task<CartItem?> UpdateCartItemAsync(long cartItemId)
-        {
-            var cartItem = await _db.CartItems.FindAsync(cartItemId);
-
-            if (cartItem == null)
-            {
-                return null;
-            }
-
-            return cartItem;
         }
     }
 }
