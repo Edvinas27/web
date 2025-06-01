@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace backend.Models.Cart
 {
-    public class AddCartItemRequest
+    public class UpdateCartItemRequest
     {
+
         [Required(ErrorMessage = "Product ID is required.")]
         public long ProductId { get; set; }
         [Range(1, int.MaxValue, ErrorMessage = "Quantity must be at least 1.")]
         [Required(ErrorMessage = "Quantity is required.")]
-        public int Quantity { get; set; }
+        public int Quantity { get; set; } 
     }
 }

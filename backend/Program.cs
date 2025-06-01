@@ -34,6 +34,7 @@ var builder = WebApplication.CreateBuilder(args);
 
     builder.Services.AddScoped<IProductRepository, ProductRepository>();
     builder.Services.AddScoped<ICartRepository, CartRepository>();
+    builder.Services.AddScoped<ICartService, CartService>();
     builder.Services.AddScoped<IJwtService, JwtService>();
     builder.Services.AddScoped<IProductService, ProductsService>();
 }

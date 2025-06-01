@@ -29,8 +29,31 @@ namespace backend.Extensions.Mappers
                 {
                     Id = data.Id,
                     ProductId = data.ProductId,
-                    Quantity = data.Quantity
+                    Quantity = data.Quantity,
+                    Product = data.Product
                 }).ToList()
+            };
+        }
+
+        public static AddCartItemResponse ToAddCartItemResponse(this CartItem cartItem)
+        {
+            return new AddCartItemResponse
+            {
+                Id = cartItem.Id,
+                CartId = cartItem.CartId,
+                ProductId = cartItem.ProductId,
+                Quantity = cartItem.Quantity
+            };
+        }
+
+        public static UpdateCartItemResponse ToUpdateCartItemResponse(this CartItem cartItem)
+        {
+            return new UpdateCartItemResponse
+            {
+                Id = cartItem.Id,
+                CartId = cartItem.CartId,
+                ProductId = cartItem.ProductId,
+                Quantity = cartItem.Quantity
             };
         }
     }
