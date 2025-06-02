@@ -1,17 +1,18 @@
-const API_BASE_URL = 'https://localhost:7117/api/Products';
+const API_BASE_URL = 'https://localhost:7117/api/Cart';
 
-export const cartService  = {
+export const cartService = {
 
-    async getItems()
+    async getCart()
     {
-            const response = await fetch(`${API_BASE_URL}`);
+            const response = await fetch(`${API_BASE_URL}`, {
+                credentials: 'include'
+            });
 
             if(!response.ok)
             {
                 throw new Error(`Failed to fetch items: ${response.statusText}`);
             }
-            return response.json();
+            const data = await response.json();
+            return data;
     },
 }
-
-//WILL NEED TO GET SLUG FOR KEY
