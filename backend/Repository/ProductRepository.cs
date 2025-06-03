@@ -56,7 +56,7 @@ namespace backend.Repository
         public async Task<IEnumerable<Product>> GetPagedProductsAsync(ProductPagedRequest request)
         {
             var pageNumber = request.PageNumber ?? 1;
-            var pageSize = request.PageSize ?? 10;
+            var pageSize = request.PageSize ?? 20;
 
             return await _db.Products
             .OrderBy(p => p.Id)

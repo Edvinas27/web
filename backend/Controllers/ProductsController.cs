@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using backend.Data;
 using backend.Interfaces;
+using backend.Models;
 using backend.Models.Products;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -27,12 +28,19 @@ namespace backend.Controllers
             if (request.PageNumber.HasValue && request.PageSize.HasValue)
             {
                 var pagedProducts = await _service.GetPagedProductsAsync(request);
-                return Ok(pagedProducts);
+                return Ok(ApiResponse<IEnumerable<GetProductResponse>>.SuccessResponse(
+                    pagedProducts,
+                    "Paged products retrieved successfully."
+                ));
             }
-            
+
             var products = await _service.GetAllProductsAsync();
 
-            return Ok(products);
+
+            return Ok(ApiResponse<IEnumerable<GetProductResponse>>.SuccessResponse(
+                products,
+                "Products retrieved successfully."
+            ));
         }
 
         [HttpGet("{id:long}")]
@@ -42,16 +50,25 @@ namespace backend.Controllers
 
             if (product == null)
             {
-                return NotFound("Product not found.");
+                return NotFound(ApiResponse<GetProductResponse>.ErrorResponse(
+                    "Product not found.",
+                    [$"Product with ID {id} does not exist."]
+                ));
             }
-            return Ok(product);
+            return Ok(ApiResponse<GetProductResponse>.SuccessResponse(
+                product,
+                "Product retrieved successfully."
+            ));
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromBody] CreateProductRequest request)
         {
             var createdProduct = await _service.CreateProductAsync(request);
-            return CreatedAtAction(nameof(GetProductById), new { id = createdProduct!.Id }, createdProduct);
+            return CreatedAtAction(nameof(GetProductById), new { id = createdProduct!.Id }, ApiResponse<CreateProductResponse>.SuccessResponse(
+                createdProduct,
+                "Product created successfully."
+            ));
         }
 
         [HttpPut("{id:long}")]
@@ -61,10 +78,16 @@ namespace backend.Controllers
 
             if (updatedProduct == null)
             {
-                return NotFound("Product not found.");
+                return NotFound(ApiResponse<UpdateProductResponse>.ErrorResponse(
+                    "Product could not be updated.",
+                    [$"Product with ID {id} does not exist."]
+                ));
             }
 
-            return Ok(updatedProduct);
+            return Ok(ApiResponse<UpdateProductResponse>.SuccessResponse(
+                updatedProduct,
+                "Product updated successfully."
+            ));
         }
 
         [HttpDelete("{id:long}")]
@@ -74,7 +97,10 @@ namespace backend.Controllers
 
             if (deletedProduct == false)
             {
-                return NotFound("Product not found.");
+                return NotFound(ApiResponse.ErrorResponse(
+                    "Product could not be deleted.",
+                    [$"Product with ID {id} does not exist."]
+                ));
             }
 
             return NoContent();
