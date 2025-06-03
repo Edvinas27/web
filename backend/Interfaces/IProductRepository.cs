@@ -8,6 +8,7 @@ namespace backend.Interfaces
 {
     public interface IProductRepository
     {
+        Task<IEnumerable<Product>> GetPagedProductsAsync(ProductPagedRequest request);
         Task<IEnumerable<Product>> GetAllProductsAsync();
         Task<Product?> GetProductByIdAsync(long id);
         Task<Product> CreateProductAsync(Product product);

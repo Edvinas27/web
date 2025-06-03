@@ -17,6 +17,7 @@ namespace backend.Services
             _logger = logger;
             _prodRepo = prodRepo;
         }
+        
 
         public async Task<CreateProductResponse> CreateProductAsync(CreateProductRequest product)
         {
@@ -45,6 +46,14 @@ namespace backend.Services
             _logger.LogInformation("Retrieving all products");
             var products = await _prodRepo.GetAllProductsAsync();
 
+            return products.Select(data => data.ToResponseGet());
+        }
+
+        public async Task<IEnumerable<GetProductResponse>> GetPagedProductsAsync(ProductPagedRequest request)
+        {
+            var products = await _prodRepo.GetPagedProductsAsync(request);
+
+            _logger.LogInformation("Retrieving paged products: Page {PageNumber}, Size {PageSize}", request.PageNumber, request.PageSize);
             return products.Select(data => data.ToResponseGet());
         }
 

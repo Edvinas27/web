@@ -8,6 +8,7 @@ namespace backend.Interfaces
 {
     public interface ICartRepository
     {
+        
         Task<Cart> CreateCartAsync(Cart cart);
         Task<Cart?> GetCartByGuestIdAsync(string guestId);
         Task<CartItem> AddCartItemAsync(long cartId, CartItem cartItem);

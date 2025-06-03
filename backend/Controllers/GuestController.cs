@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
 {
+    [ApiController]
+    [Route("api/guest")]
     public class GuestController : ControllerBase
     {
         private readonly IJwtService _jwt;
@@ -17,7 +19,7 @@ namespace backend.Controllers
             _jwt = jwt;
         }
 
-        [HttpGet("api/guest/token")]
+        [HttpGet("token")]
         public IActionResult GetGuestToken()
         {
             if (!Request.Cookies.ContainsKey("guest_token"))

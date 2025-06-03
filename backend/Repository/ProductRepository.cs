@@ -19,6 +19,7 @@ namespace backend.Repository
             _db = db;
         }
 
+
         public async Task<Product> CreateProductAsync(Product product)
         {
             await _db.Products.AddAsync(product);
@@ -50,6 +51,19 @@ namespace backend.Repository
         public async Task<Product?> GetProductByIdAsync(long id)
         {
             return await _db.Products.FindAsync(id);
+        }
+
+        public async Task<IEnumerable<Product>> GetPagedProductsAsync(ProductPagedRequest request)
+        {
+            var pageNumber = request.PageNumber ?? 1;
+            var pageSize = request.PageSize ?? 10;
+
+            return await _db.Products
+            .OrderBy(p => p.Id)
+            .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<Product?> UpdateProductAsync(long id, Product request)

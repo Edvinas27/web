@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace backend.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/products")]
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _service;
@@ -22,8 +22,14 @@ namespace backend.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllProducts()
+        public async Task<IActionResult> GetAllProducts([FromQuery] ProductPagedRequest request)
         {
+            if (request.PageNumber.HasValue && request.PageSize.HasValue)
+            {
+                var pagedProducts = await _service.GetPagedProductsAsync(request);
+                return Ok(pagedProducts);
+            }
+            
             var products = await _service.GetAllProductsAsync();
 
             return Ok(products);
