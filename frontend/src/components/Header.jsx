@@ -1,5 +1,4 @@
 import React from 'react'
-import Sidebar from './subcomponents/Sidebar'
 import { Link, } from 'react-router-dom'
 
 export default function Header() {
@@ -21,7 +20,7 @@ export default function Header() {
         </Link>
       </div>
 
-      <div className="border-b border-gray-200 h-16 flex justify-between">
+      <div className="border-b border-gray-200 h-16 flex justify-between shadow-sm">
         <div>
           <Link to="/">
             <button className="sm:ml-16 lg:ml-64 hover:cursor-pointer text-xs tracking-widest border-r border-gray-200 pr-4 h-4 mt-4 hover:underline">
