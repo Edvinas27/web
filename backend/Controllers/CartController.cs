@@ -46,7 +46,7 @@ namespace backend.Controllers
                 return Unauthorized("Invalid or missing guest token.");
             }
 
-            var result = await _service.AddItemToCartAsync(guestId, request);
+            var result = await _service.AddCartItemAsync(guestId, request);
 
             if (result == null)
             {

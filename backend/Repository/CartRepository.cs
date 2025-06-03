@@ -16,9 +16,14 @@ namespace backend.Repository
         {
             _db = db;
         }
-        public async Task<CartItem> AddCartItemToCartAsync(long cartId, CartItem cartItem)
+        public async Task<CartItem> AddCartItemAsync(long cartId, CartItem cartItem)
         {
-            var cart = await _db.Carts.FindAsync(cartId) ?? throw new Exception("Cart not found");
+            var cart = await _db.Carts.AnyAsync(c => c.Id == cartId);
+
+            if (!cart)
+            {
+                throw new ArgumentException("Cart not found");
+            }
 
             var existingProduct = await _db.CartItems.FirstOrDefaultAsync(ci => ci.CartId == cartId && ci.ProductId == cartItem.ProductId);
 

@@ -18,7 +18,7 @@ namespace backend.Services
             _prodRepo = prodRepo;
             _cartRepo = cartRepo;
         }
-        public async Task<AddCartItemResponse> AddItemToCartAsync(string guestId, AddCartItemRequest request)
+        public async Task<AddCartItemResponse> AddCartItemAsync(string guestId, AddCartItemRequest request)
         {
             var product = await _prodRepo.GetProductByIdAsync(request.ProductId);
 
@@ -35,7 +35,7 @@ namespace backend.Services
                 Quantity = request.Quantity,
             };
 
-            var addedItem = await _cartRepo.AddCartItemToCartAsync(cart.Id, cartItem);
+            var addedItem = await _cartRepo.AddCartItemAsync(cart.Id, cartItem);
 
             return addedItem.ToAddCartItemResponse();
         }
@@ -47,21 +47,10 @@ namespace backend.Services
 
             if (cart == null)
             {
-                cart = await CreateCartAsync(guestId);
+                cart = await CreateCartInternalAsync(guestId);
             }
 
             return cart.ToCartDto();
-        }
-
-        public async Task<Cart> CreateCartAsync(string guestId)
-        {
-            var cart = new Cart
-            {
-                GuestId = guestId,
-                CreatedAt = DateTime.UtcNow,
-            };
-
-            return await _cartRepo.CreateCartAsync(cart);
         }
 
         public async Task<bool> RemoveCartItemAsync(string guestId, long cartItemId)
@@ -88,10 +77,21 @@ namespace backend.Services
             var cart = await _cartRepo.GetCartByGuestIdAsync(guestId);
             if (cart == null)
             {
-                cart = await CreateCartAsync(guestId);
+                cart = await CreateCartInternalAsync(guestId);
             }
             return cart;
 
+        }
+
+        private async Task<Cart> CreateCartInternalAsync(string guestId)
+        {
+            var cart = new Cart
+            {
+                GuestId = guestId,
+                CreatedAt = DateTime.UtcNow,
+            };
+
+            return await _cartRepo.CreateCartAsync(cart);
         }
     }
 }

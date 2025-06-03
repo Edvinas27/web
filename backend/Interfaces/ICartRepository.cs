@@ -10,7 +10,7 @@ namespace backend.Interfaces
     {
         Task<Cart> CreateCartAsync(Cart cart);
         Task<Cart?> GetCartByGuestIdAsync(string guestId);
-        Task<CartItem> AddCartItemToCartAsync(long cartId, CartItem cartItem);
+        Task<CartItem> AddCartItemAsync(long cartId, CartItem cartItem);
         Task<bool> RemoveCartItemAsync(long cartItemId);
     }
 }

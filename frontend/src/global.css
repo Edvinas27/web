@@ -1,9 +1,13 @@
 @import "tailwindcss";
 
+
 html, body {
     scrollbar-width: none;
     -ms-overflow-style: none; /* IE and Edge remove scrollbar*/
-    background-color: #FDFBEE;
+    background-color: #f9fafb; /* Set a default background color */
+    font-family: 'Roboto slab', sans-serif;
+    height: 100%;
+    color: #333333;
 }
 
 body::-webkit-scrollbar {

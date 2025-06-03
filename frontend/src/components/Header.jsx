@@ -1,42 +1,58 @@
 import React from 'react'
-import { useState } from 'react'
 import Sidebar from './subcomponents/Sidebar'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, } from 'react-router-dom'
 
 export default function Header() {
 
-  const navigate = useNavigate()
-  const [isOpen, setIsOpen] = useState(false)
-
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen)
-  }
-
   return (
-    <div className='fixed top-0 left-0 right-0 z-50 w-screen h-24 flex justify-between items-center bg-[#BBBFCA] border-b border-white shadow-md'>
-      <div className='flex flex-row items-center'>
-        <button className='ml-8 h-16 w-16 hover:cursor-pointer active:scale-95'
-        onClick={toggleSidebar}>
-          <img src='/assets/hamburger.png'
-          alt='Hamburger Icon'
-          className='h-full w-full hover:invert'></img>
-        </button>
-        <Link to={'/'}>
-        <p className='ml-16 text-5xl tracking-widest font-extralight '>DROBė<span className='text-xs tracking-normal'>since 1998</span></p>
+    <>
+      <div className="h-48 border-b border-gray-200 flex flex-col items-center justify-between">
+        <div className="bg-[#333333] w-full">
+          <h1 className="font-light mt-2 mb-2 text-xs tracking-widest text-white text-center">
+            FREE SHIPPING OVER 50$
+          </h1>
+        </div>
+        <Link to="/">
+          <button className="hover:cursor-pointer">
+            <div className="mb-4 mt-4 text-5xl tracking-widest">
+              DROBė
+            </div>
+          </button>
         </Link>
       </div>
-        {<Sidebar isOpen={isOpen}/>}
-        <div className='flex flex-row items-center mr-8 h-12 w-32'>
-            <button className='h-8 w-8 mr-4 ml-12 hover:cursor-pointer hover:invert active:scale-95'>
-              <img src='/assets/heart.png'></img>
+
+      <div className="border-b border-gray-200 h-16 flex justify-between">
+        <div>
+          <Link to="/">
+            <button className="sm:ml-16 lg:ml-64 hover:cursor-pointer text-xs tracking-widest border-r border-gray-200 pr-4 h-4 mt-4 hover:underline">
+              HOME
             </button>
-            <button className='h-8 w-8 hover:cursor-pointer hover:invert active:scale-95'
-            onClick={() => {
-              navigate('/cart')
-            }}>
-              <img src='/assets/shopping-cart.png'></img>
-            </button> 
+          </Link>
+          <button className="ml-4 hover:cursor-pointer text-xs tracking-widest border-r border-gray-200 pr-4 h-4 mt-4 hover:underline">
+            SHOP
+          </button>
+          <button className="ml-4 hover:cursor-pointer text-xs tracking-widest pr-4 h-8 mt-4 hover:underline">
+            CONTACT US
+          </button>
         </div>
-    </div>
-  ) 
+
+        <div>
+          <Link to="/">
+            <button className="mr-4 hover:cursor-pointer h-8 mt-4 hover:scale-110 transition-transform duration-200 ease-in-out">
+              <img src="/assets/heart.png" alt="Heart" className="h-4" />
+            </button>
+          </Link>
+          <Link to="/cart">
+            <button className="sm:mr-16 lg:mr-64 hover:cursor-pointer h-8 mt-4 hover:scale-110 transition-transform duration-200 ease-in-out">
+              <img
+                src="/assets/shopping-cart.png"
+                alt="Shopping Cart"
+                className="h-4"
+              />
+            </button>
+          </Link>
+        </div>
+      </div>
+    </>
+  ); 
 }

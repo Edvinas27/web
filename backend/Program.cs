@@ -26,6 +26,7 @@ var builder = WebApplication.CreateBuilder(args);
                 .AllowCredentials();
         });
     });
+    
 
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
     {
