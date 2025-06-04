@@ -16,9 +16,11 @@ namespace backend.Models.Products
         public decimal Price { get; set; }
         public string Description { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "Category is required.")]
+        public string Category { get; set; } = string.Empty;
+
         [Required(ErrorMessage = "Image URL is required.")]
-        [Url(ErrorMessage = "Invalid URL format.")]
-        public string ImageUrl { get; set; } = string.Empty;
+        public List<ImagesDto> Images { get; set; } = [];
 
     }
 }

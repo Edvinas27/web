@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using backend.Extensions.Mappers;
 using backend.Interfaces;
+using backend.Models;
 using backend.Models.Products;
 
 namespace backend.Services
@@ -27,7 +28,12 @@ namespace backend.Services
                 Name = product.Name,
                 Price = product.Price,
                 Description = product.Description,
-                ImageUrl = product.ImageUrl,
+                Category = product.Category,
+                Images = product.Images?.Select(dto => new Images
+                {
+                    Url = dto.Url,
+                    Context = dto.Context
+                }).ToList() ?? [],
                 CreatedAt = DateTime.UtcNow
             };
 
@@ -80,7 +86,12 @@ namespace backend.Services
                 Name = request.Name,
                 Price = request.Price,
                 Description = request.Description,
-                ImageUrl = request.ImageUrl
+                Category = request.Category,
+                Images = request.Images?.Select(dto => new Images
+                {
+                    Url = dto.Url,
+                    Context = dto.Context
+                }).ToList() ?? [],
             };
 
             var updatedProduct = await _prodRepo.UpdateProductAsync(id, product);

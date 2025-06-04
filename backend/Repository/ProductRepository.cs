@@ -45,12 +45,16 @@ namespace backend.Repository
 
         public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
-            return await _db.Products.ToListAsync();
+            return await _db.Products.Include(p => p.Images).
+                AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<Product?> GetProductByIdAsync(long id)
         {
-            return await _db.Products.FindAsync(id);
+            return await _db.Products.Include(p => p.Images)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<IEnumerable<Product>> GetPagedProductsAsync(ProductPagedRequest request)
@@ -59,6 +63,7 @@ namespace backend.Repository
             var pageSize = request.PageSize ?? 20;
 
             return await _db.Products
+            .Include(p => p.Images)
             .OrderBy(p => p.Id)
             .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)

@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace backend.Models
 {
-
     public class ApiResponse
     {
         public bool Success { get; set; }
         public string? Message { get; set; } = string.Empty;
+
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public IEnumerable<string>? Errors { get; set; } = [];
 
@@ -37,8 +37,8 @@ namespace backend.Models
     }
     public class ApiResponse<T> : ApiResponse
     {
-
-        public T? Data { get; set; } 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public T? Data { get; set; }
 
         public static ApiResponse<T> SuccessResponse(T data, string? message = null)
         {

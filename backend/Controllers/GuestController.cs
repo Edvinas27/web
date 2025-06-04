@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using backend.Interfaces;
+using backend.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
@@ -22,26 +23,33 @@ namespace backend.Controllers
         [HttpGet("token")]
         public IActionResult GetGuestToken()
         {
-            if (!Request.Cookies.ContainsKey("guest_token"))
+            try
             {
-                var guestId = Guid.NewGuid().ToString();
-                var token = _jwt.GenerateToken(guestId);
-
-                Response.Cookies.Append("guest_token", token, new CookieOptions
+                if (!Request.Cookies.ContainsKey("guest_token"))
                 {
-                    // console.log(document.cookie) wont work, XSS protection
-                    HttpOnly = true,
-                    // Secure flag if true ensures the cookie is sent over HTTPS only, prod always true
-                    Secure = false,
-                    // I dont quite understand this yet :(
-                    SameSite = SameSiteMode.Lax,
-                    Expires = DateTimeOffset.UtcNow.AddHours(1)
-                });
+                    var guestId = Guid.NewGuid().ToString();
+                    var token = _jwt.GenerateToken(guestId);
 
-                return Ok(new { message = "Guest token created successfully", guestId });
+                    Response.Cookies.Append("guest_token", token, new CookieOptions
+                    {
+                        // PREVENTS JS ACCESS, XSS protection
+                        HttpOnly = true,
+                        // Secure flag if true ensures the cookie is sent over HTTPS only, prod always true
+                        Secure = false,
+                        // I dont quite understand this yet :(
+                        SameSite = SameSiteMode.Lax,
+                        Expires = DateTimeOffset.UtcNow.AddHours(1)
+                    });
+
+                    return Ok(ApiResponse.SuccessResponse("Guest token generated successfully."));
+                }
+
+                return Ok(ApiResponse.SuccessResponse("Guest token already exists."));
             }
-
-            return Ok(new { message = "Guest token already exists" });
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse.ErrorResponse("An error occurred while generating the guest token.", [ex.Message]));
+            }
         }
     }
 }

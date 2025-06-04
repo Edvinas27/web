@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using backend.Models;
 using backend.Models.Cart;
 using backend.Models.Products;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,8 @@ namespace backend.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
+
+        public DbSet<Images> Images { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -43,6 +46,12 @@ namespace backend.Data
             modelBuilder.Entity<Cart>()
                 .HasIndex(c => c.GuestId)
                 .IsUnique();
+
+            modelBuilder.Entity<Product>()
+                .HasMany(p => p.Images)
+                .WithOne(i => i.Product)
+                .HasForeignKey(i => i.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
                 
         }
     }

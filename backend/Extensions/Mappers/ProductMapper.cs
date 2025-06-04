@@ -16,7 +16,8 @@ namespace backend.Extensions.Mappers
                 Name = product.Name,
                 Price = product.Price,
                 Description = product.Description,
-                ImageUrl = product.ImageUrl
+                Category = product.Category,
+                Images = product.Images.ToDtoList()
             };
         }
 
@@ -28,7 +29,8 @@ namespace backend.Extensions.Mappers
                 Name = product.Name,
                 Price = product.Price,
                 Description = product.Description,
-                ImageUrl = product.ImageUrl,
+                Category = product.Category,
+                Images = product.Images.ToDtoList(),
                 CreatedAt = DateTime.UtcNow
             };
         }
@@ -41,7 +43,8 @@ namespace backend.Extensions.Mappers
                 Name = product.Name,
                 Price = product.Price,
                 Description = product.Description,
-                ImageUrl = product.ImageUrl,
+                Category = product.Category,
+                Images = product.Images.ToDtoList(),
                 CreatedAt = product.CreatedAt
             };
         }

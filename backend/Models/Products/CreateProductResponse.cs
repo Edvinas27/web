@@ -14,8 +14,8 @@ namespace backend.Models.Products
 
         public string Description { get; set; } = string.Empty;
 
-        public string ImageUrl { get; set; } = string.Empty;
-
+        public string Category { get; set; } = string.Empty;
+        public List<ImagesDto> Images { get; set; } = [];
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

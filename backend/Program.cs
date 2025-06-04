@@ -51,6 +51,5 @@ if (app.Environment.IsDevelopment())
 app.UseCors("Default");
 app.UseHttpsRedirection();
 app.MapControllers();
-app.MapHub<ChatHub>("/chathub");
 
 app.Run();
