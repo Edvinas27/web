@@ -46,6 +46,7 @@ namespace backend.Repository
         public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
             return await _db.Products.Include(p => p.Images).
+                AsSplitQuery().
                 AsNoTracking()
                 .ToListAsync();
         }
@@ -53,6 +54,7 @@ namespace backend.Repository
         public async Task<Product?> GetProductByIdAsync(long id)
         {
             return await _db.Products.Include(p => p.Images)
+            .AsSplitQuery()
             .AsNoTracking()
             .FirstOrDefaultAsync(p => p.Id == id);
         }
@@ -63,6 +65,7 @@ namespace backend.Repository
             var pageSize = request.PageSize ?? 20;
 
             return await _db.Products
+            .AsSplitQuery()
             .Include(p => p.Images)
             .OrderBy(p => p.Id)
             .Skip((pageNumber - 1) * pageSize)

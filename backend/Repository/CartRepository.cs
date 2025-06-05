@@ -51,7 +51,12 @@ namespace backend.Repository
 
         public async Task<Cart?> GetCartByGuestIdAsync(string guestId)
         {
-            return await _db.Carts.Include(c => c.CartItems).ThenInclude(ci => ci.Product).FirstOrDefaultAsync(c => c.GuestId == guestId);
+            return await _db.Carts.Include(c => c.CartItems).
+            ThenInclude(ci => ci.Product!).
+            ThenInclude(p => p.Images).
+            AsSplitQuery().
+            AsNoTracking().
+            FirstOrDefaultAsync(c => c.GuestId == guestId);
         }
 
         public async Task<bool> RemoveCartItemAsync(long cartItemId)

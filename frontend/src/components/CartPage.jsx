@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { cartService } from "../../Services/CartService";
+import { cartService } from "../../services/cartService";
 
 export default function CartPage() {
   const navigate = useNavigate();
@@ -19,6 +19,7 @@ export default function CartPage() {
       setError(null);
 
       const cartData = await cartService.getCart();
+      console.log(cartData);
       setCart(cartData);
     } catch (error) {
       console.error("Error fetching cart:", error);
@@ -85,7 +86,7 @@ export default function CartPage() {
     );
   }
 
-  if (!cart?.cartItems?.length) {
+  if (!cart?.data?.cartItems?.length) {
     return (
       <div className="flex justify-center items-center h-screen">
         <div className="text-center">
@@ -102,7 +103,7 @@ export default function CartPage() {
     );
   }
 
-  const subtotal = cart.cartItems.reduce(
+  const subtotal = cart.data.cartItems.reduce(
     (total, item) => total + item.quantity * item.product.price,
     0
   );
@@ -114,13 +115,13 @@ export default function CartPage() {
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 bg-white rounded-lg shadow p-6">
-            {cart.cartItems.map((item) => (
+            {cart.data.cartItems.map((item) => (
               <div
                 key={item.product.id}
                 className="flex items-center border-b border-gray-200 py-4 last:border-b-0"
               >
                 <img
-                  src={item.product.imageUrl}
+                  src={item.product.images[0].url}
                   alt={item.product.name}
                   className="w-20 h-20 object-cover rounded mr-4"
                 />
@@ -174,7 +175,7 @@ export default function CartPage() {
 
             <div className="space-y-3">
               <div className="flex justify-between">
-                <span>Subtotal ({cart.cartItems.length} items)</span>
+                <span>Subtotal ({cart.data.cartItems.length} items)</span>
                 <span>${subtotal.toFixed(2)}</span>
               </div>
 

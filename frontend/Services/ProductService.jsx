@@ -6,7 +6,8 @@ export const ProductService = {
     async getProducts() {
         try
         {
-            const response = await fetch(`${API_BASE_URL}`, {
+            let url = API_BASE_URL;
+            const response = await fetch(`${url}?PageNumber=2&PageSize=12`, {
                 method: 'GET',
             });
 

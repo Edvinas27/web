@@ -80,7 +80,7 @@ export default function MainPage() {
   }
 
   return (  
-    <div className='container mx-auto py-6 px-46 h-screen'>
+    <div className='container mx-auto py-6 px-46'>
       <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg-grid-cols-4 gap-6'>
         {products.map((product) => ( 
           <ItemBox key={product.id} data={product} />

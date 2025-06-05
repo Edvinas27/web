@@ -1,6 +1,6 @@
 import {useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom';
-
+import { cartService } from '../../services/cartService';
 
 function ProductPage() {
 
@@ -13,8 +13,21 @@ function ProductPage() {
     const [loading, setLoading] = useState(!initialProduct);
     const [error, setError] = useState(null);
 
-
+        const handleAddToCart = async (productId) => {
+            try
+            {
+                const response = await cartService.addToCart(productId, 1);
     
+                if(response.success)
+                {
+                    console.log(response.message);
+                }
+            } catch (error)
+            {
+                console.error("Error adding item to cart:", error);
+            }
+        }
+
 
     useEffect(() => {
         if(!product)
@@ -66,7 +79,12 @@ function ProductPage() {
             <div>
                 <div className='border-b border-gray-300'>
                     <h1 className='text-2xl font-light tracking-widest'>{product.name}</h1>
-                    <h2 className='tracking-widest text-2xl font-light mb-8 mt-4'>{product.price} EUR</h2>
+                    <h2 className='tracking-widest text-2xl font-light mb-8 mt-4'>{product.price} EUR
+                        <button className="ml-8 border-gray-300 border py-1 px-1 rounded hover:bg-gray-100 hover:cursor-pointer hover:scale-105 transition duration-200 ease-in-out"
+                        onClick={() => handleAddToCart(product.id)}>
+                            Add to Cart
+                        </button>
+                    </h2>
                 </div>
                 add more photo support
             </div>

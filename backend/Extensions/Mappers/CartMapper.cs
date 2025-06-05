@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using backend.Models;
 using backend.Models.Cart;
 using backend.Models.Products;
 
@@ -23,12 +24,11 @@ namespace backend.Extensions.Mappers
         {
             return new CartDto
             {
-                GuestId = cart.GuestId,
-                CreatedAt = cart.CreatedAt,
-                CartItems = cart.CartItems.Select(data => new CartItemResponse
+                CartItems = cart.CartItems.Where(data => data.Product != null)
+                .Select(data => new CartItemResponse
                 {
                     Quantity = data.Quantity,
-                    Product = data.Product
+                    Product = data.Product!.ToResponseGet()
                 }).ToList()
             };
         }
