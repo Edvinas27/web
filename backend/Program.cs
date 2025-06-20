@@ -5,6 +5,7 @@ using backend.Repository;
 using backend.Services;
 using Microsoft.EntityFrameworkCore;
 
+
 var builder = WebApplication.CreateBuilder(args);
 {
     builder.Services.AddControllers().AddJsonOptions(options =>
@@ -15,7 +16,8 @@ var builder = WebApplication.CreateBuilder(args);
 
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
-    builder.Services.AddSignalR();
+    builder.Services.AddHttpContextAccessor();
+
 
     builder.Services.AddCors(options =>
     {
@@ -54,3 +56,8 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program
+{
+
+}
