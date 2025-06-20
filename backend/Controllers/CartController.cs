@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using backend.Filters;
 using backend.Interfaces;
 using backend.Models;
 using backend.Models.Cart;
@@ -11,30 +8,26 @@ namespace backend.Controllers
 {
     [ApiController]
     [Route("api/cart")]
-    public class CartController : ControllerBase
+    public class CartController : BaseController
     {
-        private readonly IJwtService _jwt;
         private readonly ICartService _service;
+        private readonly ILogger<CartController> _logger;
 
-        public CartController(IJwtService jwt, ICartService service)
+        public CartController(ICartService service, ILogger<CartController> logger) 
         {
-            _jwt = jwt;
             _service = service;
+            _logger = logger;
         }
 
         [HttpGet]
+        [RequireGuestId]
         public async Task<IActionResult> GetCart()
         {
+            var guestId = HttpContext.Items["GuestId"] as string;
+        
             try
             {
-                var guestId = GetGuestIdFromRequest();
-
-                if (guestId == null)
-                {
-                    return Unauthorized(ApiResponse.ErrorResponse("Invalid or missing guest token."));
-                }
-
-                var cart = await _service.GetOrCreateCartAsync(guestId);
+                var cart = await _service.GetOrCreateCartAsync(guestId!);
 
                 return Ok(ApiResponse<CartDto>.SuccessResponse(cart, "Cart retrieved successfully."));
             }
@@ -45,18 +38,14 @@ namespace backend.Controllers
         }
 
         [HttpPost("items")]
+        [RequireGuestId]
+
         public async Task<IActionResult> AddItemToCart([FromBody] AddCartItemRequest request)
         {
+            var guestId = HttpContext.Items["GuestId"] as string;
             try
             {
-                var guestId = GetGuestIdFromRequest();
-
-                if (guestId == null)
-                {
-                    return Unauthorized(ApiResponse.ErrorResponse("Invalid or missing guest token."));
-                }
-
-                var result = await _service.AddCartItemAsync(guestId, request);
+                var result = await _service.AddCartItemAsync(guestId!, request);
 
                 return Ok(ApiResponse<AddCartItemResponse>.SuccessResponse(result, "Item added to cart successfully."));
             }
@@ -71,18 +60,14 @@ namespace backend.Controllers
         }
 
         [HttpDelete("items/{cartItemId}")]
+        [RequireGuestId]
         public async Task<IActionResult> RemoveItemFromCart(long cartItemId)
         {
+            var guestId = HttpContext.Items["GuestId"] as string;
+
             try
             {
-                var guestId = GetGuestIdFromRequest();
-
-                if (guestId == null)
-                {
-                    return Unauthorized(ApiResponse.ErrorResponse("Invalid or missing guest token."));
-                }
-
-                var result = await _service.RemoveCartItemAsync(guestId, cartItemId);
+                var result = await _service.RemoveCartItemAsync(guestId!, cartItemId);
 
                 if (!result)
                 {
@@ -95,19 +80,6 @@ namespace backend.Controllers
             {
                 return StatusCode(500, ApiResponse.ErrorResponse("An error occurred while removing item from cart.", [ex.Message]));
             }
-        }
-
-
-        private string? GetGuestIdFromRequest()
-        {
-            var token = Request.Cookies["guest_token"];
-
-            if (string.IsNullOrEmpty(token))
-            {
-                return null;
-            }
-
-            return _jwt.GetGuestIdFromToken(token);
         }
     }
 }

@@ -10,7 +10,5 @@ namespace backend.Interfaces
     {
         string GenerateToken(string guestId);
         ClaimsPrincipal? ValidateToken(string token);
-        string? GetGuestIdFromToken(string token);
-
     }
 }

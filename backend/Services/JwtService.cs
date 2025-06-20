@@ -67,18 +67,5 @@ namespace backend.Services
             }
         }
 
-        public string? GetGuestIdFromToken(string token)
-        {
-            var principal = ValidateToken(token);
-
-            if (principal == null)
-            {
-                return null;
-            }
-
-            var guestId = principal.Claims.FirstOrDefault(data => data.Type == "guestId")?.Value;
-
-            return guestId;
-        }
     }
 }
