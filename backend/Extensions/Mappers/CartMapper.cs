@@ -27,6 +27,7 @@ namespace backend.Extensions.Mappers
                 CartItems = cart.CartItems.Where(data => data.Product != null)
                 .Select(data => new CartItemResponse
                 {
+                    Id = data.Id,
                     Quantity = data.Quantity,
                     Product = data.Product!.ToResponseGet()
                 }).ToList()

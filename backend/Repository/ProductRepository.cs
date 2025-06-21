@@ -19,7 +19,6 @@ namespace backend.Repository
             _db = db;
         }
 
-
         public async Task<Product> CreateProductAsync(Product product)
         {
             await _db.Products.AddAsync(product);

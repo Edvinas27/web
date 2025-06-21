@@ -13,7 +13,7 @@ namespace backend.Controllers
         private readonly ICartService _service;
         private readonly ILogger<CartController> _logger;
 
-        public CartController(ICartService service, ILogger<CartController> logger) 
+        public CartController(ICartService service, ILogger<CartController> logger)
         {
             _service = service;
             _logger = logger;
@@ -23,8 +23,8 @@ namespace backend.Controllers
         [RequireGuestId]
         public async Task<IActionResult> GetCart()
         {
-            var guestId = HttpContext.Items["GuestId"] as string;
-        
+            var guestId = HttpContext.Items["guest_token"] as string;
+
             try
             {
                 var cart = await _service.GetOrCreateCartAsync(guestId!);
@@ -42,7 +42,7 @@ namespace backend.Controllers
 
         public async Task<IActionResult> AddItemToCart([FromBody] AddCartItemRequest request)
         {
-            var guestId = HttpContext.Items["GuestId"] as string;
+            var guestId = HttpContext.Items["guest_token"] as string;
             try
             {
                 var result = await _service.AddCartItemAsync(guestId!, request);
@@ -63,7 +63,7 @@ namespace backend.Controllers
         [RequireGuestId]
         public async Task<IActionResult> RemoveItemFromCart(long cartItemId)
         {
-            var guestId = HttpContext.Items["GuestId"] as string;
+            var guestId = HttpContext.Items["guest_token"] as string;
 
             try
             {

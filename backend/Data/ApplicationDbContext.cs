@@ -32,6 +32,10 @@ namespace backend.Data
             .HasForeignKey(c => c.CartId)
             .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<Cart>()
+            .HasIndex(c => c.GuestId)
+            .IsUnique();
+
             modelBuilder.Entity<CartItem>()
             .HasOne(c => c.Product)
             .WithMany()
@@ -39,19 +43,18 @@ namespace backend.Data
             .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<CartItem>()
-            // dont allow duplicate combinations of cartId + productId
             .HasIndex(c => new { c.CartId, c.ProductId })
             .IsUnique();
-
-            modelBuilder.Entity<Cart>()
-                .HasIndex(c => c.GuestId)
-                .IsUnique();
 
             modelBuilder.Entity<Product>()
                 .HasMany(p => p.Images)
                 .WithOne(i => i.Product)
                 .HasForeignKey(i => i.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            //* This is to ensure that not all data is checked in the database when searching by category, but only data from that category.
+            modelBuilder.Entity<Product>()
+                .HasIndex(p => p.Category);
                 
         }
     }

@@ -12,12 +12,12 @@ namespace backend.Filters
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            var guestId = context.HttpContext.Request.Cookies["guest_token"];
+            var token = context.HttpContext.Request.Cookies["guest_token"];
 
-            if (string.IsNullOrEmpty(guestId))
+            if (string.IsNullOrEmpty(token))
             {
                 var logger = context.HttpContext.RequestServices.GetService<ILogger<RequireGuestId>>();
-                logger?.LogWarning("Guest ID is null or missing in the request.");
+                logger?.LogWarning("Guest token is null or missing in the request.");
 
                 context.Result = new UnauthorizedObjectResult(
                     ApiResponse.ErrorResponse("Invalid or missing guest token.")
@@ -25,7 +25,8 @@ namespace backend.Filters
                 return;
             }
 
-            context.HttpContext.Items["GuestId"] = guestId;
+            
+            context.HttpContext.Items["guest_token"] = token;
         }
     }
 }

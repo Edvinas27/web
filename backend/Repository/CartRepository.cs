@@ -16,15 +16,9 @@ namespace backend.Repository
         {
             _db = db;
         }
+
         public async Task<CartItem> AddCartItemAsync(long cartId, CartItem cartItem)
         {
-            var cart = await _db.Carts.AnyAsync(c => c.Id == cartId);
-
-            if (!cart)
-            {
-                throw new ArgumentException("Cart not found");
-            }
-
             var existingProduct = await _db.CartItems.FirstOrDefaultAsync(ci => ci.CartId == cartId && ci.ProductId == cartItem.ProductId);
 
             if (existingProduct != null)
@@ -51,7 +45,8 @@ namespace backend.Repository
 
         public async Task<Cart?> GetCartByGuestIdAsync(string guestId)
         {
-            return await _db.Carts.Include(c => c.CartItems).
+            return await _db.Carts.
+            Include(c => c.CartItems).
             ThenInclude(ci => ci.Product!).
             ThenInclude(p => p.Images).
             AsSplitQuery().

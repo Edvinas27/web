@@ -13,12 +13,14 @@ namespace backend.Services
     {
     private readonly IProductRepository _prodRepo;
     private readonly ILogger<ProductsService> _logger;
-        public ProductsService(IProductRepository prodRepo, ILogger<ProductsService> logger)
+    private readonly IRedisCacheService _cacheService;
+        public ProductsService(IProductRepository prodRepo, ILogger<ProductsService> logger, IRedisCacheService cacheService)
         {
             _logger = logger;
             _prodRepo = prodRepo;
+            _cacheService = cacheService;
         }
-        
+
 
         public async Task<CreateProductResponse> CreateProductAsync(CreateProductRequest product)
         {
@@ -49,8 +51,19 @@ namespace backend.Services
 
         public async Task<IEnumerable<GetProductResponse>> GetAllProductsAsync()
         {
-            _logger.LogInformation("Retrieving all products");
+            var cacheProducts = await _cacheService.GetDataAsync<IEnumerable<Product>>("all_products");
+
+            if (cacheProducts is not null)
+            {
+                _logger.LogInformation("Products found in cache, returnning cached data");
+                return cacheProducts.Select(data => data.ToResponseGet());
+            }
+
+
+            _logger.LogInformation("Products not found in cache, caching...");
             var products = await _prodRepo.GetAllProductsAsync();
+
+            await _cacheService.SetDataAsync<IEnumerable<Product>>("all_products", products);
 
             return products.Select(data => data.ToResponseGet());
         }
@@ -65,17 +78,22 @@ namespace backend.Services
 
         public async Task<GetProductResponse?> GetProductByIdAsync(long id)
         {
-            _logger.LogInformation("Retrieving product with ID: {ProductId}", id);
-            var product = await _prodRepo.GetProductByIdAsync(id);
+            _logger.LogInformation("Trying to retrieve product {id} from cache", id);
+            var product = await _cacheService.GetDataAsync<Product>($"product_{id}");
 
             if (product == null)
             {
-                _logger.LogWarning("Product with ID: {ProductId} not found", id);
-                return null;
+                _logger.LogWarning("Product with ID: {ProductId} not found in cache", id);
+                product = await _prodRepo.GetProductByIdAsync(id);
+                if (product == null)
+                {
+                    _logger.LogWarning("Product with ID: {ProductId} not found in database", id);
+                    return null;
+                }
+                _logger.LogInformation("Product with ID: {ProductId} found in database, caching it", id);
+                await _cacheService.SetDataAsync($"product_{id}", product);
             }
-
             return product.ToResponseGet();
-
         }
 
         public async Task<UpdateProductResponse?> UpdateProductAsync(long id, UpdateProductRequest request)
